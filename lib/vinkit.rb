@@ -1,5 +1,8 @@
-require "vinkit/version"
+require 'vinkit/version'
+require 'vinkit/decoder'
+require 'vinkit/adapters/base'
+require 'vinkit/adapters/test'
 
 module Vinkit
-  # Your code goes here...
+  DEFAULT_ADAPTER = Vinkit::Adapters::Base 
 end
