@@ -1,9 +1,7 @@
 module Vinkit
   module Adapters
     class Test < Base
-      def vin
-        '1GCWG9CL8C1167771'
-      end
+      VIN = '1GCWG9CL8C1167771'
 
       def year
         '2012'

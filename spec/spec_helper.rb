@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "pry"
 require "vinkit"
 
 RSpec.configure do |config|
@@ -8,4 +9,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+  
+  # declare an exclusion filter
+  config.filter_run_excluding network: true # makes network call - e.g. slow and external dependency
 end

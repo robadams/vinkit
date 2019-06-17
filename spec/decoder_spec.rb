@@ -10,19 +10,30 @@ describe Vinkit::Decoder do
     end
   end
 
+  shared_examples :decodes do |vin, adapter|
+    subject(:decoder) { described_class.new(vin, adapter: adapter) }
+
+    {
+      vin: '1GCWG9CL8C1167771',
+      year: '2012',
+      make: 'Chevrolet',
+      model: 'Express'
+    }.each do |k, v|
+      it "decodes correct #{k}" do
+        expect(decoder.send(k)).to eq(v)
+      end
+    end
+  end
+
   context 'with Test adapter' do
-      subject(:decoder) { described_class.new(vin, adapter: Vinkit::Adapters::Test) }
+    include_examples :decodes, '1GCWG9CL8C1167771', Vinkit::Adapters::Test
+  end
 
-      it 'decodes correct year' do
-        expect(decoder.year).to eq('2012')
-      end
+  context 'with Nhtsa adapter', network: false do
+    include_examples :decodes, '1GCWG9CL8C1167771', Vinkit::Adapters::Nhtsa
 
-      it 'decodes correct make' do
-        expect(decoder.make).to eq('Chevrolet')
-      end
+    it "handles payload error"
 
-      it 'decodes correct model' do
-        expect(decoder.model).to eq('Express')
-      end
+    it "handles response error"
   end
 end
