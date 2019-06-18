@@ -1,8 +1,6 @@
 module Vinkit
   module Adapters
     class NotImplementedError < StandardError; end # adapter fails to implement method
-    class InvalidError < StandardError; end # vin invalid
-    class NotFoundError < StandardError; end # vin not found
     class Error < StandardError; end # everything else
     
     class Base 

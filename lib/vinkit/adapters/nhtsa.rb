@@ -3,7 +3,7 @@ require "faraday"
 module Vinkit
   module Adapters
     class Nhtsa < Base # https://vpic.nhtsa.dot.gov/decoder/Decoder
-      API_URL = 'https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/{vin}?format=json'
+      API_URL = 'https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/{vin}?format=json'.freeze
 
       def year
         fetch("ModelYear")
@@ -17,24 +17,33 @@ module Vinkit
         fetch("Model")
       end
 
+      def error?
+      end
+
       private
 
       def fetch(key)
-        target
+        payload
           .fetch(key)
           .split
           .map(&:capitalize)
           .join(' ')
       end
 
-      def target
-        @_target ||= payload.fetch("Results").first
-      end
-
       def payload
         return if @_payload 
 
-        payload = JSON.parse(response.body)
+        begin
+          payload = JSON.parse(response.body)
+          payload = payload.fetch("Results").first
+        rescue => e
+          raise Vinkit::Adapters::Error, e.message # most likely parse errror or change in response format
+        end
+
+        error_code = payload.fetch("ErrorCode")
+        unless error_code.match(/0 - VIN decoded clean/)
+          raise Vinkit::Adapters::Error, "Error decoding vin: #{error_code}" # refer to error code
+        end
 
         @_payload = payload
       end
@@ -43,7 +52,6 @@ module Vinkit
         return if @_response
 
         response = Faraday.get(url)
-
         if response.status == 200
           @_response = response
         else
