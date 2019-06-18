@@ -1,4 +1,5 @@
 require "faraday"
+require "json"
 
 module Vinkit
   module Adapters
@@ -17,9 +18,6 @@ module Vinkit
         fetch("Model")
       end
 
-      def error?
-      end
-
       private
 
       def fetch(key)
@@ -31,8 +29,14 @@ module Vinkit
       end
 
       def payload
-        return if @_payload 
+        @_payload ||= fetch_payload
+      end
 
+      def response
+        @_response ||= fetch_response
+      end
+
+      def fetch_payload
         begin
           payload = JSON.parse(response.body)
           payload = payload.fetch("Results").first
@@ -45,15 +49,13 @@ module Vinkit
           raise Vinkit::Adapters::Error, "Error decoding vin: #{error_code}" # refer to error code
         end
 
-        @_payload = payload
+        payload
       end
 
-      def response
-        return if @_response
-
+      def fetch_response
         response = Faraday.get(url)
         if response.status == 200
-          @_response = response
+          response
         else
           raise Vinkit::Adapters::Error, "Invalid response status from Nhtsa adapter: #{response.status}"
         end 

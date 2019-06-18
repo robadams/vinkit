@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "vinkit"
+require 'thor'
+
+class Cli < Thor
+
+  desc "decode", "Decode a VIN"
+  def decode(vin)
+    decoder = Vinkit::Decoder.new(vin, adapter: Vinkit::Adapters::Nhtsa)
+
+    puts [
+      decoder.vin,
+      decoder.year,
+      decoder.make,
+      decoder.model,
+    ].join(" | ")
+  end
+
+end
+
+Cli.start(ARGV)
