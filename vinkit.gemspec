@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["robert.mark.adams@gmail.com"]
 
   spec.summary       = 'A toolkit for working with Vehicle Identification Numbers (VINs)'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/robadams/vinkit"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
